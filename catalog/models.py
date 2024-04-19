@@ -102,7 +102,7 @@ class Book(models.Model):
         verbose_name="Анотация книги",
     )
     isbn = models.CharField(
-        max_length="13",
+        max_length=13,
         help_text="Должен содержать 13 символов",
         verbose_name="ISBN книги",
     )
