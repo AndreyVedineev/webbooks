@@ -48,7 +48,10 @@ class Author(models.Model):
         null=True,
         blank=True,
     )
-    about = models.ImageField(
+    about = models.TextField(
+        help_text="Введите сведения об авторе", verbose_name="Сведения об авторе"
+    )
+    photo = models.ImageField(
         upload_to="images",
         help_text="Введите фото автора",
         null=True,
@@ -56,7 +59,7 @@ class Author(models.Model):
     )
 
     def __str__(self) -> str:
-        return self.last_name
+        return f'{self.first_name} {self.last_name}' 
 
 
 class Book(models.Model):
@@ -124,41 +127,43 @@ class Book(models.Model):
     def get_absolute_url(self):
         return reverse("book_detail", args=[str(self.id)])
 
-    class Status(models.Model):
-        name = models.CharField(
-            max_length=20,
-            help_text="Введите статус книги",
-            verbose_name="Статус экземпляра книги",
-        )
 
-        def __str__(self) -> str:
-            return self.name
+class Status(models.Model):
+    name = models.CharField(
+        max_length=20,
+        help_text="Введите статус книги",
+        verbose_name="Статус экземпляра книги",
+    )
 
-    class BookInstance(models.Model):
-        book = models.ForeignKey("Book", on_delete=models.CASCADE, null="True")
-        inv_nom = models.CharField(
-            max_length=20,
-            null=True,
-            help_text="Введите инвентарный номер",
-            verbose_name="Инвентарный номер",
-        )
-        status = models.ForeignKey(
-            "Status",
-            on_delete=models.CASCADE,
-            null=True,
-            help_text="Изменить состояние экземпляра",
-        )
-        due_back = models.DateField(
-            null=True,
-            blank=True,
-            help_text="Введите конец срока статуса",
-            verbose_name="Дата окончания статуса",
-        )
+    def __str__(self) -> str:
+        return self.name
 
-        class Meta:
-            ordering = [
-                "due_back",
-            ]
 
-        def __str__(self) -> str:
-            return f"{self.inv_nom} -  {self.book} - {self.status}"
+class BookInstance(models.Model):
+    book = models.ForeignKey("Book", on_delete=models.CASCADE, null="True")
+    inv_nom = models.CharField(
+        max_length=20,
+        null=True,
+        help_text="Введите инвентарный номер",
+        verbose_name="Инвентарный номер",
+    )
+    status = models.ForeignKey(
+        "Status",
+        on_delete=models.CASCADE,
+        null=True,
+        help_text="Изменить состояние экземпляра",
+    )
+    due_back = models.DateField(
+        null=True,
+        blank=True,
+        help_text="Введите конец срока статуса",
+        verbose_name="Дата окончания статуса",
+    )
+
+    class Meta:
+        ordering = [
+            "due_back",
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.inv_nom} -  {self.book} - {self.status}"
