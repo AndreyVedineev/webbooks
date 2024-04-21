@@ -1,3 +1,4 @@
+from urllib import request
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView
 from django.core.paginator import Paginator
@@ -45,3 +46,34 @@ class AuthorListView(ListView):
 
 class AuthorDetailView(DetailView):
     model = Author
+
+
+def about(request):
+    text_head = 'Сведения о компании'
+    name = 'ООО A_Vedineev'
+    rab1 = 'Разработка приложений'
+    rab2 = 'Продажа цветов'
+    rab3 = 'Создание графических АРТ-объектов на основе' \
+           ' систем искусственного интеллекта'
+    rab4 = 'Создание цифровых интерактивных книг, учебных пособий' \
+           ' автоматизированных обучающих систем'
+    context = {'text_head': text_head, 'name': name,
+               'rab1': rab1, 'rab2': rab2,
+               'rab3': rab3, 'rab4': rab4}
+    # передача словаря context с данными в шаблон
+    return render(request, 'catalog/about.html', context)
+
+
+def contact(request):
+    text_head = 'Контакты'
+    name = 'ООО "A_Vedineev"'
+    address = 'Краснодарский край, пгт. Мостовской, ул. Горького 144'
+    tel = '+7918 024 13 03'
+    email = 'avedineev@yandex.ru'
+    # Словарь для передачи данных в шаблон index.html
+    context = {'text_head': text_head,
+               'name': name, 'address': address,
+               'tel': tel,
+               'email': email}
+    # передача словаря context с данными в шаблон
+    return render(request, 'catalog/contact.html', context)
