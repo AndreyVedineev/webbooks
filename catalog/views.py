@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import DetailView, ListView
+from django.core.paginator import Paginator
 
 from catalog.models import Author, Book, BookInstance
 
@@ -25,6 +26,22 @@ def index(request):
 
     return render(request, "catalog/index.html", context)
 
+
 class BookListView(ListView):
     model = Book
-    context_object_name ='books'
+    context_object_name = "books"
+    paginate_by = 3
+
+
+class BookDetailView(DetailView):
+    model = Book
+    context_object_name = "book"
+
+
+class AuthorListView(ListView):
+    model = Author
+    paginate_by = 4
+
+
+class AuthorDetailView(DetailView):
+    model = Author
