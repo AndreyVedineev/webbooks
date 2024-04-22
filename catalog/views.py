@@ -14,6 +14,9 @@ def index(request):
     num_instances_available = BookInstance.objects.filter(status__exact=2).count()
     authors = Author.objects
     num_authors = Author.objects.count
+    # Количество посещений этого view, подсчитанное в переменной session
+    num_visits = request.session.get("num_visits", 0)
+    request.session["num_visits"] = num_visits + 1
     context = {
         "text_head": text_head,
         "books": books,
@@ -23,6 +26,7 @@ def index(request):
         "authors": authors,
         "num_authors": num_authors,
         "text_body": "Это содержимое главной страницы сайта",
+        "num_visits": num_visits,
     }
 
     return render(request, "catalog/index.html", context)
@@ -49,31 +53,43 @@ class AuthorDetailView(DetailView):
 
 
 def about(request):
-    text_head = 'Сведения о компании'
-    name = 'ООО A_Vedineev'
-    rab1 = 'Разработка приложений'
-    rab2 = 'Продажа цветов'
-    rab3 = 'Создание графических АРТ-объектов на основе' \
-           ' систем искусственного интеллекта'
-    rab4 = 'Создание цифровых интерактивных книг, учебных пособий' \
-           ' автоматизированных обучающих систем'
-    context = {'text_head': text_head, 'name': name,
-               'rab1': rab1, 'rab2': rab2,
-               'rab3': rab3, 'rab4': rab4}
+    text_head = "Сведения о компании"
+    name = "ООО A_Vedineev"
+    rab1 = "Разработка приложений"
+    rab2 = "Продажа цветов"
+    rab3 = (
+        "Создание графических АРТ-объектов на основе"
+        " систем искусственного интеллекта"
+    )
+    rab4 = (
+        "Создание цифровых интерактивных книг, учебных пособий"
+        " автоматизированных обучающих систем"
+    )
+    context = {
+        "text_head": text_head,
+        "name": name,
+        "rab1": rab1,
+        "rab2": rab2,
+        "rab3": rab3,
+        "rab4": rab4,
+    }
     # передача словаря context с данными в шаблон
-    return render(request, 'catalog/about.html', context)
+    return render(request, "catalog/about.html", context)
 
 
 def contact(request):
-    text_head = 'Контакты'
+    text_head = "Контакты"
     name = 'ООО "A_Vedineev"'
-    address = 'Краснодарский край, пгт. Мостовской, ул. Горького 144'
-    tel = '+7918 024 13 03'
-    email = 'avedineev@yandex.ru'
+    address = "Краснодарский край, пгт. Мостовской, ул. Горького 144"
+    tel = "+7918 024 13 03"
+    email = "avedineev@yandex.ru"
     # Словарь для передачи данных в шаблон index.html
-    context = {'text_head': text_head,
-               'name': name, 'address': address,
-               'tel': tel,
-               'email': email}
+    context = {
+        "text_head": text_head,
+        "name": name,
+        "address": address,
+        "tel": tel,
+        "email": email,
+    }
     # передача словаря context с данными в шаблон
-    return render(request, 'catalog/contact.html', context)
+    return render(request, "catalog/contact.html", context)
