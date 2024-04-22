@@ -1,7 +1,7 @@
 {% extends "catalog/base.html" %}
 {% block title %}Мир книг{% endblock  %}
 {% block header %}
-    <h5> {{text_head}}</h5>
+    <h5 class="text-center"> {{text_head}}</h5>
 {% endblock header %}
 {% block content %}
     <div class="container-fluid my-2">
@@ -24,8 +24,8 @@
         <div class="row text-center text-dark lh-2">
             <h3>Книги</h3>
         </div>
-        {% if num_books > 0 %}
-        <div class="row text-center my-2">
+    {% if num_books > 0 %}
+        <div class="row text-center my-1">
             {% for obj in books %}
             <div class="col-sm-3 mb-1 mb-sm-0">
                 <div class="card mb-3 box-shadow" style="width: 10rem;">
