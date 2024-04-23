@@ -145,3 +145,7 @@ INTERNAL_IPS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/'
+
+
+''' это пробная отправка на консоль '''
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
