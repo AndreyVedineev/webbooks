@@ -1,10 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from django.views import generic
 from urllib import request
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView
 from django.core.paginator import Paginator
+from .forms import Form_add_author
 
 from catalog.models import Author, Book, BookInstance
 
@@ -109,3 +112,37 @@ class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
             .filter(status__exact="2")
             .order_by("due_back")
         )
+
+
+def edit_authors(request):
+    author = Author.objects.all()
+    context = {"author": author}
+    return render(request, "catalog/edit_authors.html", context)
+
+
+def add_author(request):
+    if request.method == "POST":
+        form = Form_add_author(request.POST, request.FILES)
+        if form.is_valid():
+            # получить данные из формы
+            first_name = form.cleaned_data.get("first_name")
+            last_name = form.cleaned_data.get("last_name")
+            date_of_birth = form.cleaned_data.get("date_of_birth")
+            about = form.cleaned_data.get("about")
+            photo = form.cleaned_data.get("photo")
+            # создать объект для записи в БД
+            obj = Author.objects.create(
+                first_name=first_name,
+                last_name=last_name,
+                date_of_birth=date_of_birth,
+                about=about,
+                photo=photo,
+            )
+            # сохранить полученные данные
+            obj.save()
+            # загрузить страницу со списком автором
+            return HttpResponseRedirect(reverse("catalog:authors"))
+    else:
+        form = Form_add_author()
+        context = {"form": form}
+        return render(request, "catalog/authors_add.html", context)
