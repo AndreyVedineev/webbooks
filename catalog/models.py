@@ -1,6 +1,9 @@
+from datetime import date
+from tkinter import CASCADE
 from unittest import mock
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 # Create your models here.
@@ -59,7 +62,7 @@ class Author(models.Model):
     )
 
     def __str__(self) -> str:
-        return f'{self.first_name} {self.last_name}' 
+        return f"{self.first_name} {self.last_name}"
 
 
 class Book(models.Model):
@@ -126,11 +129,11 @@ class Book(models.Model):
 
     def get_absolute_url(self):
         return reverse("book_detail", args=[str(self.id)])
-    
+
     def display_author(self):
-        return ','.join([author.last_name for author in self.author.all()])
-    
-    display_author.short_description = 'Авторы'
+        return ",".join([author.last_name for author in self.author.all()])
+
+    display_author.short_description = "Авторы"
 
 
 class Status(models.Model):
@@ -145,6 +148,7 @@ class Status(models.Model):
 
 
 class BookInstance(models.Model):
+
     book = models.ForeignKey("Book", on_delete=models.CASCADE, null="True")
     inv_nom = models.CharField(
         max_length=20,
@@ -164,6 +168,21 @@ class BookInstance(models.Model):
         help_text="Введите конец срока статуса",
         verbose_name="Дата окончания статуса",
     )
+    borrower = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Заказчик",
+        help_text="Выберите заказчика книги",
+    )
+    objects = models.Manager
+
+    @property
+    def is_overdue(self):
+        if self.due_back and date.today() > self.due_back:
+            return True
+        return False
 
     class Meta:
         ordering = [

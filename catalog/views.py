@@ -1,3 +1,6 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models.query import QuerySet
+from django.views import generic
 from urllib import request
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView
@@ -93,3 +96,16 @@ def contact(request):
     }
     # передача словаря context с данными в шаблон
     return render(request, "catalog/contact.html", context)
+
+
+class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
+    model = BookInstance
+    template_name = "catalog/bookinstance_list_borrowed_user.html"
+    paginate_by = 10
+
+    def get_queryset(self):
+        return (
+            BookInstance.objects.filter(borrower=self.request.user)
+            .filter(status__exact="2")
+            .order_by("due_back")
+        )
