@@ -1,6 +1,8 @@
 from django import forms
 from datetime import date
 
+from .models import Author
+
 
 class Form_add_author(forms.Form):
     first_name = forms.CharField(label="Фамилия автора")
@@ -13,3 +15,9 @@ class Form_add_author(forms.Form):
     about= forms.CharField(label='Сведения об авторе',
                            widget=forms.Textarea)
     photo = forms.ImageField(label='Фототавтора')
+
+# форма для изменения сведений об авторах
+class Form_edit_author(forms.ModelForm):
+    class Meta:
+        model = Author
+        fields = '__all__'

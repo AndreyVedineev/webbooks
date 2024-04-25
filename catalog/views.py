@@ -1,13 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
-from urllib import request
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView
 from django.core.paginator import Paginator
-from .forms import Form_add_author
+from .forms import Form_add_author, Form_edit_author
+from .models import Author
 
 from catalog.models import Author, Book, BookInstance
 
@@ -146,3 +146,33 @@ def add_author(request):
         form = Form_add_author()
         context = {"form": form}
         return render(request, "catalog/authors_add.html", context)
+
+
+def delete(request, id):
+    try:
+        author = Author.objects.get(id=id)
+        author.delete()
+        return HttpResponseRedirect("/edit_authors/")
+    except:
+        return HttpResponseNotFound("<h2>Автор не найден</h2>")
+
+
+def edit_author(request, id):
+    author = Author.objects.get(id=id)
+    # author = get_object_or_404(Author, pk=id)
+    if request.method == "POST":
+        instance = Author.objects.get(pk=id)
+        form = Form_edit_author(request.POST, request.FILES, instance=instance)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect("/edit_authors/")
+    else:
+        form = Form_edit_author(instance=author)
+        content = {"form": form}
+        return render(request, "catalog/edit_author.html", content)
+
+
+def edit_books(request):
+    book = Book.objects.all()
+    context = {'book': book}
+    return render(request, "catalog/edit_books.html", context)
