@@ -1,10 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.query import QuerySet
 from django.http import HttpResponseNotFound, HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import generic
 from django.shortcuts import render
-from django.views.generic import DetailView, ListView
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 from django.core.paginator import Paginator
 from .forms import Form_add_author, Form_edit_author
 from .models import Author
@@ -176,3 +176,21 @@ def edit_books(request):
     book = Book.objects.all()
     context = {'book': book}
     return render(request, "catalog/edit_books.html", context)
+
+class BookCreate(CreateView):
+    model = Book
+    fields = '__all__'
+    success_url = reverse_lazy('catalog:edit_books')
+
+
+# Класс для обновления в БД  записи о книге
+class BookUpdate(UpdateView):
+    model = Book
+    fields = '__all__'
+    success_url = reverse_lazy('catalog:edit_books')
+
+
+# Класс для удаления из БД  записи о книге
+class BookDelete(DeleteView):
+    model = Book
+    success_url = reverse_lazy('catalog:edit_books')
